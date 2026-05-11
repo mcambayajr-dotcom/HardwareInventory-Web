@@ -129,81 +129,14 @@ function inventory_rows($db, $admin = false) {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-try {
-    $db = get_db();
-    seed_if_empty($db);
+function update_order_status($db) {
+    $id = (int)input('id');
+    $status = input('order_status');
+    $adminNote = input('admin_note');
 
-    if ($action === 'ping') {
-        json_response(true, 'API is online');
+    if ($id <= 0) {
+        json_response(false, 'Select a valid order first.', null, 422);
     }
-
-    if ($action === 'list' || $action === 'list_public' || $action === 'customer_list') {
-        json_response(true, '', inventory_rows($db, false));
+    if (!in_array($status, order_statuses(), true)) {
+        json_response(false, 'Invalid order status.', null, 422);
     }
-
-    if ($action === 'list_admin') {
-        require_admin_api_token();
-        json_response(true, '', inventory_rows($db, true));
-    }
-
-    if ($action === 'add') {
-        require_admin_api_token();
-        $item = item_payload(false);
-
-        $stmt = $db->prepare("INSERT INTO hardware_items (item_name, category, brand, model, serial_number, quantity, status, location, remarks, created_at, updated_at)
-                              VALUES (:item_name, :category, :brand, :model, :serial_number, :quantity, :status, :location, :remarks, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
-        $stmt->execute($item);
-
-        json_response(true, 'Item has been added.');
-    }
-
-    if ($action === 'update') {
-        require_admin_api_token();
-        $item = item_payload(true);
-
-        $exists = $db->prepare("SELECT COUNT(*) FROM hardware_items WHERE id = :id");
-        $exists->execute([':id' => $item['id']]);
-        if ((int)$exists->fetchColumn() === 0) {
-            json_response(false, 'Item was not found.', null, 404);
-        }
-
-        $stmt = $db->prepare("UPDATE hardware_items SET
-            item_name = :item_name,
-            category = :category,
-            brand = :brand,
-            model = :model,
-            serial_number = :serial_number,
-            quantity = :quantity,
-            status = :status,
-            location = :location,
-            remarks = :remarks,
-            updated_at = CURRENT_TIMESTAMP
-            WHERE id = :id");
-        $stmt->execute($item);
-
-        json_response(true, 'Item has been updated.');
-    }
-
-    if ($action === 'delete') {
-        require_admin_api_token();
-
-        $id = (int)input('id');
-        if ($id <= 0) {
-            json_response(false, 'Select a valid item first.', null, 422);
-        }
-
-        $stmt = $db->prepare("DELETE FROM hardware_items WHERE id = :id");
-        $stmt->execute([':id' => $id]);
-
-        if ($stmt->rowCount() === 0) {
-            json_response(false, 'Item was not found.', null, 404);
-        }
-
-        json_response(true, 'Item has been deleted.');
-    }
-
-    json_response(false, 'Unknown action. This early-stage version does not include customer order endpoints yet.', null, 404);
-} catch (Exception $ex) {
-    json_response(false, $ex->getMessage(), null, 500);
-}
-?>
