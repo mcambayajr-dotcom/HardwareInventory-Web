@@ -22,7 +22,6 @@ $action = $_GET['action'] ?? $_POST['action'] ?? 'list_public';
 function input($key, $default = '') {
     return trim($_POST[$key] ?? $_GET[$key] ?? $default);
 }
-
 function json_response($success, $message = '', $data = null, $statusCode = 200) {
     http_response_code($statusCode);
     $payload = ['success' => $success];
@@ -31,7 +30,6 @@ function json_response($success, $message = '', $data = null, $statusCode = 200)
     echo json_encode($payload);
     exit;
 }
-
 function require_admin_api_token() {
     $headers = function_exists('getallheaders') ? getallheaders() : [];
     $headerToken = '';
@@ -41,13 +39,11 @@ function require_admin_api_token() {
             break;
         }
     }
-
     $token = $headerToken !== '' ? $headerToken : input('admin_token');
     if ($token !== ADMIN_API_TOKEN) {
         json_response(false, 'Access denied.', null, 403);
     }
 }
-
 function item_payload($includeId = false) {
     $itemName = input('item_name');
     $category = input('category');
@@ -71,17 +67,14 @@ function item_payload($includeId = false) {
     if (!is_numeric($quantityRaw)) {
         json_response(false, 'Quantity must be a number.', null, 422);
     }
-
     $quantity = (int)$quantityRaw;
     if ($quantity < 0) {
         json_response(false, 'Quantity cannot be negative.', null, 422);
     }
-
     $allowedStatus = inventory_statuses();
     if (!in_array($status, $allowedStatus, true)) {
         $status = 'Available';
     }
-
     $payload = [
         'item_name' => $itemName,
         'category' => $category,
@@ -100,7 +93,6 @@ function item_payload($includeId = false) {
 
     return $payload;
 }
-
 function inventory_rows($db, $admin = false) {
     $q = input('q');
     $category = input('category');
@@ -137,7 +129,6 @@ function inventory_rows($db, $admin = false) {
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
-
 try {
     $db = get_db();
     seed_if_empty($db);
@@ -165,7 +156,6 @@ try {
 
         json_response(true, 'Item has been added.');
     }
-
     if ($action === 'update') {
         require_admin_api_token();
         $item = item_payload(true);
@@ -192,7 +182,6 @@ try {
 
         json_response(true, 'Item has been updated.');
     }
-
     if ($action === 'delete') {
         require_admin_api_token();
 
