@@ -1,16 +1,13 @@
 <?php
 /*
-    EARLY STAGE API FILE
+    Inventory Management API
 
-    Current capabilities:
-    - Check API status
-    - List public inventory
-    - List admin inventory
-    - Add, update, and delete inventory items
-
-    In later commits, customer orders and stock deduction will be added.
+    Available endpoints:
+    - Inventory listing
+    - Admin inventory controls
+    - Item CRUD operations
+    - Inventory search and filtering
 */
-
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
