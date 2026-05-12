@@ -201,26 +201,71 @@ try {
 
         json_response(true, 'Item has been updated.');
     }
-    // [ENDPOINT] Delete: Safely evict and drop a matched inventory record matching the row identifier
+
+    // Handle inventory item deletion request
     if ($action === 'delete') {
+
+        // Verify administrator access token
         require_admin_api_token();
 
-        $id = (int)input('id');
-        if ($id <= 0) {
-            json_response(false, 'Select a valid item first.', null, 422);
+        // Read selected item ID
+        $itemId = (int) input('id');
+
+        // Validate item identifier
+        if ($itemId < 1) {
+            json_response(
+                false,
+                'Please select a valid inventory item.',
+                null,
+                422
+            );
         }
-        $stmt = $db->prepare("DELETE FROM hardware_items WHERE id = :id");
-        $stmt->execute([':id' => $id]);
-        if ($stmt->rowCount() === 0) {
-            json_response(false, 'Item was not found.', null, 404);
+
+        // Remove item from database
+        $deleteItem = $db->prepare("
+            DELETE FROM hardware_items
+            WHERE id = :id
+        ");
+
+        $deleteItem->execute([
+            ':id' => $itemId
+        ]);
+
+        // Check if item actually existed
+        if ($deleteItem->rowCount() < 1) {
+
+            json_response(
+                false,
+                'Selected inventory item does not exist.',
+                null,
+                404
+            );
         }
-        json_response(true, 'Item has been deleted.');
+
+        // Successful delete response
+        json_response(
+            true,
+            'Inventory item deleted successfully.'
+        );
     }
 
-    // Fallback response for unhandled router requests or future order mechanics
-    json_response(false, 'Unknown action. This early-stage version does not include customer order endpoints yet.', null, 404);
-} catch (Exception $ex) {
-    // Intercept hardware breakdowns or application faults gracefully without exposing logs raw
-    json_response(false, $ex->getMessage(), null, 500);
+    // Default response for unsupported API actions
+    json_response(
+        false,
+        'Unknown request action.',
+        null,
+        404
+    );
+
+} catch (Exception $exception) {
+
+    // Return safe server error response
+    json_response(
+        false,
+        $exception->getMessage(),
+        null,
+        500
+    );
 }
+
 ?>
