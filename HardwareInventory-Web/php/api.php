@@ -54,52 +54,105 @@ function require_admin_api_token() {
     }
 }
 
-// Extracts, processes, and validates item payload structure for inserts/updates
-function item_payload($includeId = false) {
-    $itemName = input('item_name');
-    $category = input('category');
-    $brand = input('brand');
-    $model = input('model');
-    $serial = input('serial_number');
-    $quantityRaw = input('quantity', '0');
-    $status = input('status', 'Available');
-    $location = input('location');
-    $remarks = input('remarks');
+// Builds and validates inventory item data before database save
+function item_payload($includeId = false)
+{
+    // Collect form inputs
+    $itemName  = trim(input('item_name'));
+    $category  = trim(input('category'));
+    $brand     = trim(input('brand'));
+    $model     = trim(input('model'));
+    $serial    = trim(input('serial_number'));
+    $quantity  = input('quantity', 0);
+    $status    = input('status', 'Available');
+    $location  = trim(input('location'));
+    $remarks   = trim(input('remarks'));
 
-    if ($includeId && (int)input('id') <= 0) {
-        json_response(false, 'Select a valid item first.', null, 422);
+    // Validate existing item ID during update
+    if ($includeId === true) {
+
+        $itemId = (int) input('id');
+
+        if ($itemId <= 0) {
+            json_response(
+                false,
+                'Invalid inventory item selected.',
+                null,
+                422
+            );
+        }
     }
-    if ($itemName === '') {
-        json_response(false, 'Item name is required.', null, 422);
+
+    // Validate required item name
+    if (empty($itemName)) {
+
+        json_response(
+            false,
+            'Item name is required.',
+            null,
+            422
+        );
     }
-    if ($category === '') {
-        json_response(false, 'Category is required.', null, 422);
+
+    // Validate required category
+    if (empty($category)) {
+
+        json_response(
+            false,
+            'Category field is required.',
+            null,
+            422
+        );
     }
-    if (!is_numeric($quantityRaw)) {
-        json_response(false, 'Quantity must be a number.', null, 422);
+
+    // Validate quantity input
+    if (!is_numeric($quantity)) {
+
+        json_response(
+            false,
+            'Quantity value must be numeric.',
+            null,
+            422
+        );
     }
-    $quantity = (int)$quantityRaw;
+
+    // Convert quantity into integer
+    $quantity = (int) $quantity;
+
+    // Prevent negative quantity values
     if ($quantity < 0) {
-        json_response(false, 'Quantity cannot be negative.', null, 422);
+
+        json_response(
+            false,
+            'Quantity cannot be less than zero.',
+            null,
+            422
+        );
     }
-    $allowedStatus = inventory_statuses();
-    if (!in_array($status, $allowedStatus, true)) {
+
+    // Validate allowed inventory status
+    $validStatuses = inventory_statuses();
+
+    if (!in_array($status, $validStatuses, true)) {
         $status = 'Available';
     }
+
+    // Prepare payload array
     $payload = [
-        'item_name' => $itemName,
-        'category' => $category,
-        'brand' => $brand,
-        'model' => $model,
+        'item_name'     => $itemName,
+        'category'      => $category,
+        'brand'         => $brand,
+        'model'         => $model,
         'serial_number' => $serial,
-        'quantity' => $quantity,
-        'status' => $status,
-        'location' => $location,
-        'remarks' => $remarks
+        'quantity'      => $quantity,
+        'status'        => $status,
+        'location'      => $location,
+        'remarks'       => $remarks
     ];
 
+    // Include item ID for update operations
     if ($includeId) {
-        $payload['id'] = (int)input('id');
+        $payload['id'] = (int) input('id');
     }
 
     return $payload;
