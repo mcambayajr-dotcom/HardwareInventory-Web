@@ -1,39 +1,55 @@
 <?php
 /*
-    EARLY STAGE DATABASE FILE
+    INITIAL DATABASE CONFIGURATION
 
-    This starter version only creates the hardware_items table.
-    Customer accounts and customer_orders will be added in the later commits
-    from NOTES/COMMIT_GUIDE.md.
+    This version prepares the SQLite database
+    and creates the hardware_items table
+    for the inventory management system.
 */
 
-function get_db() {
+function get_db()
+{
+    // Verify if SQLite driver is enabled in PHP
     if (!in_array('sqlite', PDO::getAvailableDrivers(), true)) {
-        throw new RuntimeException('PDO SQLite driver is not enabled. In XAMPP, enable extension=pdo_sqlite in php.ini and restart PHP/Apache.');
+        throw new RuntimeException(
+            'PDO SQLite driver is not enabled. In XAMPP, enable extension=pdo_sqlite in php.ini and restart PHP/Apache.'
+        );
     }
 
+    // Define SQLite database file path
     $dbFile = __DIR__ . '/hardware_inventory.sqlite';
+
+    // Create database connection
     $db = new PDO('sqlite:' . $dbFile);
+
+    // Enable PDO exception handling
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Enable foreign key support
     $db->exec('PRAGMA foreign_keys = ON');
 
-    $db->exec("CREATE TABLE IF NOT EXISTS hardware_items (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        item_name TEXT NOT NULL,
-        category TEXT NOT NULL,
-        brand TEXT,
-        model TEXT,
-        serial_number TEXT,
-        quantity INTEGER NOT NULL DEFAULT 0,
-        status TEXT NOT NULL DEFAULT 'Available',
-        location TEXT,
-        remarks TEXT,
-        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-    )");
+    // Create inventory table if it does not exist
+    $db->exec("
+        CREATE TABLE IF NOT EXISTS hardware_items (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            item_name TEXT NOT NULL,
+            category TEXT NOT NULL,
+            brand TEXT,
+            model TEXT,
+            serial_number TEXT,
+            quantity INTEGER NOT NULL DEFAULT 0,
+            status TEXT NOT NULL DEFAULT 'Available',
+            location TEXT,
+            remarks TEXT,
+            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+    ");
 
+    // Return active database connection
     return $db;
 }
+?>
 
 function seed_if_empty($db) {
     $count = (int)$db->query("SELECT COUNT(*) FROM hardware_items")->fetchColumn();
