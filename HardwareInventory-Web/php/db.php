@@ -49,30 +49,135 @@ function get_db()
     // Return active database connection
     return $db;
 }
-?>
 
-function seed_if_empty($db) {
-    $count = (int)$db->query("SELECT COUNT(*) FROM hardware_items")->fetchColumn();
 
-    if ($count === 0) {
-        $stmt = $db->prepare("INSERT INTO hardware_items (item_name, category, brand, model, serial_number, quantity, status, location, remarks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute(['Desktop Computer', 'Computer Unit', 'Dell', 'OptiPlex 3090', 'DX-PC-001', 12, 'Available', 'Main Stockroom', 'Ready for release']);
-        $stmt->execute(['Network Switch', 'Network Device', 'TP-Link', 'TL-SG1024', 'NET-SW-024', 3, 'Available', 'Network Cabinet', '24-port gigabit switch']);
-        $stmt->execute(['LCD Monitor', 'Peripheral', 'Acer', 'V196HQL', 'MON-AC-091', 8, 'Available', 'Display Rack', 'For workstation setup']);
-        $stmt->execute(['External SSD', 'Storage Device', 'Kingston', 'XS1000', 'SSD-KG-007', 5, 'Low Stock', 'Accessories Shelf', 'Portable storage unit']);
-        $stmt->execute(['Laser Printer', 'Printer', 'Brother', 'HL-L2320D', 'PRN-BR-013', 2, 'Available', 'Printer Area', 'For office use']);
+// Inserts default hardware records when inventory table is empty
+function seed_if_empty($db)
+{
+    // Count existing inventory items
+    $count = (int)$db
+        ->query("SELECT COUNT(*) FROM hardware_items")
+        ->fetchColumn();
+
+    // Stop seeding if records already exist
+    if ($count > 0) {
+        return;
+    }
+
+    // Prepare reusable insert statement
+    $query = "
+        INSERT INTO hardware_items
+        (
+            item_name,
+            category,
+            brand,
+            model,
+            serial_number,
+            quantity,
+            status,
+            location,
+            remarks
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ";
+
+    $stmt = $db->prepare($query);
+
+    // Default sample inventory records
+    $sampleItems = [
+        [
+            'Desktop Computer',
+            'Computer Unit',
+            'Dell',
+            'OptiPlex 3090',
+            'DX-PC-001',
+            12,
+            'Available',
+            'Main Stockroom',
+            'Ready for release'
+        ],
+        [
+            'Network Switch',
+            'Network Device',
+            'TP-Link',
+            'TL-SG1024',
+            'NET-SW-024',
+            3,
+            'Available',
+            'Network Cabinet',
+            '24-port gigabit switch'
+        ],
+        [
+            'LCD Monitor',
+            'Peripheral',
+            'Acer',
+            'V196HQL',
+            'MON-AC-091',
+            8,
+            'Available',
+            'Display Rack',
+            'For workstation setup'
+        ],
+        [
+            'External SSD',
+            'Storage Device',
+            'Kingston',
+            'XS1000',
+            'SSD-KG-007',
+            5,
+            'Low Stock',
+            'Accessories Shelf',
+            'Portable storage unit'
+        ],
+        [
+            'Laser Printer',
+            'Printer',
+            'Brother',
+            'HL-L2320D',
+            'PRN-BR-013',
+            2,
+            'Available',
+            'Printer Area',
+            'For office use'
+        ]
+    ];
+
+    // Insert all sample inventory records
+    foreach ($sampleItems as $item) {
+        $stmt->execute($item);
     }
 }
 
-function inventory_categories() {
-    return ['Computer Unit', 'Peripheral', 'Network Device', 'Storage Device', 'Printer', 'Power Device', 'Other Hardware'];
+// Returns all available inventory categories
+function inventory_categories()
+{
+    return [
+        'Computer Unit',
+        'Peripheral',
+        'Network Device',
+        'Storage Device',
+        'Printer',
+        'Power Device',
+        'Other Hardware'
+    ];
 }
 
-function inventory_statuses() {
-    return ['Available', 'In Use', 'Low Stock', 'For Repair', 'Defective', 'Disposed'];
+// Returns all supported inventory statuses
+function inventory_statuses()
+{
+    return [
+        'Available',
+        'In Use',
+        'Low Stock',
+        'For Repair',
+        'Defective',
+        'Disposed'
+    ];
 }
 
-function public_inventory_sql() {
+// SQL condition for publicly visible inventory items
+function public_inventory_sql()
+{
     return "status NOT IN ('Defective', 'Disposed')";
 }
 ?>
