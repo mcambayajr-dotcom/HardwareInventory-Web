@@ -1,34 +1,38 @@
 <?php
 /*
-    INITIAL DATABASE CONFIGURATION
-
-    This version prepares the SQLite database
-    and creates the hardware_items table
-    for the inventory management system.
+|--------------------------------------------------------------------------
+| INITIAL DATABASE CONFIGURATION
+|--------------------------------------------------------------------------
+| This file initializes the SQLite database and creates the
+| hardware_items table for the inventory management system.
+|--------------------------------------------------------------------------
 */
 
+/**
+ * Get SQLite database connection
+ */
 function get_db()
 {
-    // Verify if SQLite driver is enabled in PHP
+    // Check if SQLite driver is enabled
     if (!in_array('sqlite', PDO::getAvailableDrivers(), true)) {
         throw new RuntimeException(
-            'PDO SQLite driver is not enabled. In XAMPP, enable extension=pdo_sqlite in php.ini and restart PHP/Apache.'
+            'PDO SQLite driver is not enabled. Enable extension=pdo_sqlite in php.ini and restart Apache.'
         );
     }
 
-    // Define SQLite database file path
+    // Database file path
     $dbFile = __DIR__ . '/hardware_inventory.sqlite';
 
-    // Create database connection
+    // Create connection
     $db = new PDO('sqlite:' . $dbFile);
 
-    // Enable PDO exception handling
+    // Enable error handling
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Enable foreign key support
+    // Enable foreign keys
     $db->exec('PRAGMA foreign_keys = ON');
 
-    // Create inventory table if it does not exist
+    // Create table if not exists
     $db->exec("
         CREATE TABLE IF NOT EXISTS hardware_items (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,26 +50,22 @@ function get_db()
         )
     ");
 
-    // Return active database connection
     return $db;
 }
 
-
-// Inserts default hardware records when inventory table is empty
+/**
+ * Seed database with default items if empty
+ */
 function seed_if_empty($db)
 {
-    // Count existing inventory items
-    $count = (int)$db
-        ->query("SELECT COUNT(*) FROM hardware_items")
-        ->fetchColumn();
+    $count = (int) $db->query("SELECT COUNT(*) FROM hardware_items")
+                      ->fetchColumn();
 
-    // Stop seeding if records already exist
     if ($count > 0) {
         return;
     }
 
-    // Prepare reusable insert statement
-    $query = "
+    $stmt = $db->prepare("
         INSERT INTO hardware_items
         (
             item_name,
@@ -79,11 +79,8 @@ function seed_if_empty($db)
             remarks
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ";
+    ");
 
-    $stmt = $db->prepare($query);
-
-    // Default sample inventory records
     $sampleItems = [
         [
             'Desktop Computer',
@@ -142,13 +139,14 @@ function seed_if_empty($db)
         ]
     ];
 
-    // Insert all sample inventory records
     foreach ($sampleItems as $item) {
         $stmt->execute($item);
     }
 }
 
-// Returns all available inventory categories
+/**
+ * Inventory categories
+ */
 function inventory_categories()
 {
     return [
@@ -162,7 +160,9 @@ function inventory_categories()
     ];
 }
 
-// Returns all supported inventory statuses
+/**
+ * Inventory statuses
+ */
 function inventory_statuses()
 {
     return [
@@ -175,7 +175,9 @@ function inventory_statuses()
     ];
 }
 
-// SQL condition for publicly visible inventory items
+/**
+ * Public inventory filter condition
+ */
 function public_inventory_sql()
 {
     return "status NOT IN ('Defective', 'Disposed')";
