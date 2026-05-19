@@ -1,11 +1,18 @@
+/* =========================================================
+   GLOBAL RESET & BASE SETTINGS
+========================================================= */
+
+/* Apply consistent box sizing for all elements */
 * {
     box-sizing: border-box;
 }
 
+/* Set base font size */
 html {
     font-size: 16px;
 }
 
+/* Base body styling and background setup */
 body {
     margin: 0;
     min-height: 100vh;
@@ -14,6 +21,12 @@ body {
     background: #081312 url('hardware_background.png') center/cover fixed no-repeat;
 }
 
+
+/* =========================================================
+   MAIN LAYOUT STRUCTURE
+========================================================= */
+
+/* Main page wrapper with gradient overlay */
 .page-shell {
     min-height: 100vh;
     position: relative;
@@ -21,6 +34,7 @@ body {
     background: linear-gradient(135deg, rgba(2, 13, 15, .92), rgba(9, 58, 52, .80), rgba(18, 77, 66, .72));
 }
 
+/* Decorative background glow effects */
 .ambient {
     position: fixed;
     width: 420px;
@@ -34,6 +48,12 @@ body {
 .ambient-one { background: #1ee6a5; left: -120px; top: -90px; }
 .ambient-two { background: #4d9dff; right: -140px; bottom: -130px; }
 
+
+/* =========================================================
+   CONTAINER & PANEL SYSTEM
+========================================================= */
+
+/* Main content container */
 .container {
     position: relative;
     z-index: 1;
@@ -42,6 +62,7 @@ body {
     padding: 34px;
 }
 
+/* Glassmorphism-style panel */
 .panel {
     background: rgba(255, 255, 255, .15);
     border: 1px solid rgba(255, 255, 255, .24);
@@ -51,6 +72,12 @@ body {
     padding: 28px;
 }
 
+
+/* =========================================================
+   LOGIN / AUTH LAYOUT
+========================================================= */
+
+/* Grid layout for login page */
 .login-layout {
     min-height: calc(100vh - 68px);
     display: grid;
@@ -59,11 +86,18 @@ body {
     align-items: center;
 }
 
+/* Stack layout for auth elements */
 .auth-stack {
     display: grid;
     gap: 20px;
 }
 
+
+/* =========================================================
+   BRANDING & TYPOGRAPHY
+========================================================= */
+
+/* Main headings for brand and topbar */
 .brand-copy h1,
 .topbar h1 {
     font-size: clamp(2.25rem, 4vw, 3.3rem);
@@ -71,6 +105,7 @@ body {
     margin: 12px 0 14px;
 }
 
+/* Paragraph styling for brand section */
 .brand-copy p {
     font-size: 1.08rem;
     line-height: 1.65;
@@ -78,6 +113,7 @@ body {
     color: #d7fff3;
 }
 
+/* Small uppercase label style */
 .eyebrow {
     text-transform: uppercase;
     letter-spacing: .18em;
@@ -86,13 +122,12 @@ body {
     color: #88f6cb;
 }
 
-.login-card h1,
-.login-card h2,
-.register-card h2 {
-    margin: 0 0 22px;
-    font-size: 1.65rem;
-}
 
+/* =========================================================
+   FORM STYLING (LOGIN / REGISTER / FILTERS)
+========================================================= */
+
+/* Input labels */
 .login-card label,
 .register-card label {
     display: block;
@@ -101,6 +136,7 @@ body {
     color: #effff9;
 }
 
+/* Input fields */
 .login-card input,
 .register-card input,
 .filters input,
@@ -118,6 +154,7 @@ body {
     font-size: 1rem;
 }
 
+/* Focus effect for inputs */
 .login-card input:focus,
 .register-card input:focus,
 .filters input:focus,
@@ -127,12 +164,12 @@ body {
     box-shadow: 0 0 0 4px rgba(136, 246, 203, .22);
 }
 
-.two-fields {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-}
 
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+/* Primary button styles */
 .login-card button,
 .register-card button,
 .btn,
@@ -156,17 +193,12 @@ body {
     line-height: 1.2;
 }
 
-.login-card button {
-    width: 100%;
-    margin-top: 22px;
-}
 
-.secondary,
-.secondary-submit {
-    background: rgba(255, 255, 255, .88);
-    color: #12352b;
-}
+/* =========================================================
+   NOTIFICATIONS / MESSAGES
+========================================================= */
 
+/* Generic notice box */
 .notice {
     border-radius: 17px;
     padding: 14px 16px;
@@ -174,20 +206,24 @@ body {
     line-height: 1.45;
 }
 
+/* Error message */
 .notice.error {
     background: rgba(255, 109, 109, .22);
     border: 1px solid rgba(255, 109, 109, .38);
 }
 
+/* Success message */
 .notice.success {
     background: rgba(72, 223, 159, .18);
     border: 1px solid rgba(72, 223, 159, .38);
 }
 
-.page-notice { margin-bottom: 20px; }
-.muted { color: #d8fff2; margin: 0; line-height: 1.5; }
-.small { font-size: .95rem; }
 
+/* =========================================================
+   DASHBOARD / HEADER
+========================================================= */
+
+/* Top navigation bar */
 .topbar {
     display: flex;
     align-items: center;
@@ -196,69 +232,19 @@ body {
     margin-bottom: 24px;
 }
 
-.topbar h1 {
-    font-size: clamp(2rem, 3vw, 2.55rem);
-}
 
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(160px, 1fr));
-    gap: 18px;
-    margin-bottom: 22px;
-}
+/* =========================================================
+   INVENTORY CARDS & GRID
+========================================================= */
 
-.stat-card span {
-    display: block;
-    color: #d8fff2;
-    font-weight: 700;
-}
-
-.stat-card strong {
-    display: block;
-    font-size: 2.25rem;
-    margin-top: 8px;
-}
-
-.inventory-panel { margin-bottom: 22px; }
-
-.section-title {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    align-items: flex-start;
-    margin-bottom: 20px;
-}
-
-.section-title h2 {
-    margin: 0 0 8px;
-    font-size: 1.75rem;
-}
-
-.pill {
-    display: inline-flex;
-    align-items: center;
-    white-space: nowrap;
-    border-radius: 999px;
-    padding: 9px 14px;
-    background: rgba(72, 223, 159, .18);
-    border: 1px solid rgba(72, 223, 159, .32);
-    font-weight: 800;
-}
-
-.filters {
-    display: grid;
-    grid-template-columns: minmax(280px, 2fr) minmax(190px, 1fr) minmax(170px, 1fr) minmax(110px, auto) minmax(100px, auto);
-    gap: 12px;
-    margin-bottom: 22px;
-    align-items: stretch;
-}
-
+/* Grid layout for inventory cards */
 .cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 18px;
 }
 
+/* Individual item card */
 .item-card {
     background: rgba(255, 255, 255, .95);
     color: #10231f;
@@ -268,30 +254,12 @@ body {
     border: 1px solid rgba(255, 255, 255, .60);
 }
 
-.shop-card {
-    display: flex;
-    flex-direction: column;
-    min-height: 390px;
-}
 
-.item-head {
-    display: flex;
-    justify-content: space-between;
-    gap: 14px;
-    align-items: flex-start;
-}
+/* =========================================================
+   STATUS BADGES
+========================================================= */
 
-.item-head h3 {
-    margin: 0;
-    font-size: 1.35rem;
-    line-height: 1.25;
-}
-
-.item-head p {
-    margin: 7px 0 0;
-    color: #5b756c;
-}
-
+/* Default status badge */
 .status {
     border-radius: 999px;
     padding: 7px 11px;
@@ -302,124 +270,12 @@ body {
     color: #17382f;
 }
 
-.status.available { background: #c8f8df; }
-.status.in-use { background: #d8e9ff; }
-.status.low-stock { background: #fff1b8; }
-.status.for-repair { background: #ffe0bc; }
-.status.defective,
-.status.rejected { background: #ffd2d2; }
-.status.disposed,
-.status.cancelled { background: #dedede; }
-.status.pending { background: #fff1b8; }
-.status.confirmed { background: #d8e9ff; }
-.status.completed { background: #c8f8df; }
 
-.item-meta {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-    margin: 20px 0;
-}
+/* =========================================================
+   RESPONSIVE DESIGN
+========================================================= */
 
-.item-meta span {
-    font-size: .86rem;
-    color: #607870;
-    line-height: 1.4;
-}
-
-.item-meta strong {
-    display: inline-block;
-    margin-top: 3px;
-    font-size: 1rem;
-    color: #10231f;
-}
-
-.remarks {
-    padding: 13px;
-    border-radius: 17px;
-    background: #eef8f4;
-    color: #31544a;
-    margin: 0 0 14px;
-    line-height: 1.45;
-}
-
-.item-card small {
-    color: #6b8179;
-    line-height: 1.4;
-}
-
-.order-form {
-    margin-top: auto;
-    display: grid;
-    gap: 12px;
-    padding-top: 14px;
-    border-top: 1px solid #ddeee8;
-}
-
-.order-row {
-    display: grid;
-    grid-template-columns: 66px 1fr;
-    gap: 12px;
-    align-items: center;
-}
-
-.order-row label {
-    font-weight: 800;
-    color: #31544a;
-}
-
-.unavailable {
-    margin-top: auto;
-    border-radius: 17px;
-    padding: 13px;
-    background: #eef0ef;
-    color: #62736e;
-    font-weight: 700;
-}
-
-.orders-panel { margin-bottom: 26px; }
-.order-list { display: grid; gap: 14px; }
-
-.order-card {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 18px;
-    align-items: center;
-    background: rgba(255, 255, 255, .93);
-    color: #10231f;
-    border-radius: 24px;
-    padding: 18px 20px;
-    border: 1px solid rgba(255, 255, 255, .58);
-}
-
-.order-card h3 { margin: 0 0 6px; font-size: 1.25rem; }
-.order-card p { margin: 0 0 6px; color: #5b756c; }
-.order-card small { display: block; color: #687e76; margin-top: 5px; }
-
-.order-actions {
-    display: grid;
-    justify-items: end;
-    gap: 9px;
-}
-
-.link-button {
-    min-height: 38px;
-    padding: 8px 14px;
-    background: #fff;
-    color: #23483e;
-    border: 1px solid #cfe4dc;
-}
-
-.empty-card {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 42px;
-    border-radius: 26px;
-    background: rgba(255, 255, 255, .91);
-    color: #445e55;
-    font-weight: 750;
-}
-
+/* Tablet view */
 @media (max-width: 1100px) {
     .login-layout,
     .stats-grid,
@@ -430,12 +286,9 @@ body {
     .container {
         padding: 22px;
     }
-
-    .topbar {
-        align-items: flex-start;
-    }
 }
 
+/* Mobile view */
 @media (max-width: 720px) {
     html {
         font-size: 15px;
@@ -444,17 +297,6 @@ body {
     .panel {
         padding: 22px;
         border-radius: 24px;
-    }
-
-    .two-fields,
-    .order-card,
-    .item-meta {
-        grid-template-columns: 1fr;
-    }
-
-    .topbar,
-    .section-title {
-        flex-direction: column;
     }
 
     .cards-grid {
