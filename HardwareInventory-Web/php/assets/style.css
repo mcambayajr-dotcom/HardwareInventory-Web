@@ -164,35 +164,39 @@ body {
     box-shadow: 0 0 0 4px rgba(136, 246, 203, .22);
 }
 
-
 /* =========================================================
    BUTTONS
 ========================================================= */
 
-/* Primary button styles */
+/* Shared button styles */
 .login-card button,
 .register-card button,
 .btn,
 .filters button,
 .order-form button,
 .link-button {
-    min-height: 48px;
-    border: 0;
-    border-radius: 17px;
-    padding: 13px 20px;
-    background: #4ae0a2;
-    color: #05251b;
-    font-weight: 850;
-    cursor: pointer;
-    text-decoration: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+
+    min-height: 48px;
+    padding: 13px 20px;
+
     font: inherit;
     font-size: 1rem;
     line-height: 1.2;
-}
 
+    font-weight: 850;
+
+    color: #05251b;
+    background: #4ae0a2;
+
+    border: none;
+    border-radius: 17px;
+
+    cursor: pointer;
+    text-decoration: none;
+}
 
 /* =========================================================
    NOTIFICATIONS / MESSAGES
