@@ -274,12 +274,11 @@ body {
     color: #17382f;
 }
 
-
 /* =========================================================
    RESPONSIVE DESIGN
 ========================================================= */
 
-/* Tablet view */
+/* Tablet and below */
 @media (max-width: 1100px) {
     .login-layout,
     .stats-grid,
@@ -292,7 +291,7 @@ body {
     }
 }
 
-/* Mobile view */
+/* Mobile devices */
 @media (max-width: 720px) {
     html {
         font-size: 15px;
